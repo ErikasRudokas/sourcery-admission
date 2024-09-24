@@ -49,6 +49,9 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         reviewDto.setBook(bookMapper.mapTo(book.get()));
+        if(reviewDto.getRating() < 1 || reviewDto.getRating() > 5){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Review createdReview = reviewService.createReview(reviewMapper.mapFrom(reviewDto));
         return new ResponseEntity<>(reviewMapper.mapTo(createdReview), HttpStatus.CREATED);
     }

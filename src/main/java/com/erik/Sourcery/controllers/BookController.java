@@ -73,13 +73,16 @@ public class BookController {
     }
 
     @GetMapping("/books/filter")
-    public List<BookDto> getBooksByFilter(@RequestParam(required = false) String title,
+    public ResponseEntity<List<BookDto>> getBooksByFilter(@RequestParam(required = false) String title,
                                           @RequestParam(required = false) Integer year,
                                           @RequestParam(required = false) String authorName,
                                           @RequestParam(required = false) Double rating){
+        if(rating != null && (rating < 1 || rating > 5)){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         List<Book> books = bookService.getBooksByFilter(title, year, authorName, rating);
-        return books.stream()
+        return new ResponseEntity<>(books.stream()
                 .map(bookMapper::mapTo)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 }
